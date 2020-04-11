@@ -24,8 +24,8 @@ In most cases, XXX is actually a number.
     gsfa                     
     └─ abcXXX                
         ├─ A                 
-        │   ├─ A_2_in.txt    
-        │   └─ A_2_out.txt   
+        │   ├─ A_1_in.txt    
+        │   └─ A_1_out.txt   
         │   
         ├─ B                 
         │   ├─ B_1_in.txt    
