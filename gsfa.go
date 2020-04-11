@@ -12,12 +12,16 @@ import (
 	"github.com/sclevine/agouti/api"
 )
 
+// TaskURL はAtCoderの問題一覧が記載されているURLです。
 const TaskURL string = "https://atcoder.jp/contests/%s/tasks"
 
 func main() {
 	Run(os.Args[1:])
 }
 
+// Run はgsfaを実行します。
+// 引数が0要素の場合は使用例を表示して終了します。
+// args[0]:contestName
 func Run(args []string) {
 
 	usage := `
@@ -38,6 +42,7 @@ Args
 	GetSamplesUseChromeDriver(args[0])
 }
 
+// GetSamplesUseChromeDriver は引数のコンテストの入出力例をchromedriverを利用して取得します。
 func GetSamplesUseChromeDriver(contestName string) {
 
 	d := agouti.ChromeDriver(
@@ -49,11 +54,12 @@ func GetSamplesUseChromeDriver(contestName string) {
 	GetSamples(d, contestName)
 }
 
+// GetSamples はdのWebDriverを利用してコンテストの入出力例を取得します。
 func GetSamples(d *agouti.WebDriver, contestName string) {
 
 	p, _ := os.Getwd()
 	contestHome := filepath.Join(p, "gsfa", contestName)
-	// ディレクトリが既に存在する場合、既にサンプルDL済みとみなす。
+	// ディレクトリが既に存在する場合、サンプルDL済みとみなす。
 	if f, err := os.Stat(contestHome); !os.IsNotExist(err) && f.IsDir() {
 		fmt.Println("Contest folder already exists below \"./gsfa\".")
 		fmt.Println("The sample case has already been downloaded.")
@@ -86,6 +92,8 @@ func GetSamples(d *agouti.WebDriver, contestName string) {
 	}
 }
 
+// GetQuestionURLs は対象のコンテストの各問題のURLを取得し、
+// map[問題名]URLの形で返却します。
 func GetQuestionURLs(d *agouti.WebDriver, contestName string) map[string]string {
 
 	if err := d.Start(); err != nil {
@@ -122,6 +130,7 @@ func GetQuestionURLs(d *agouti.WebDriver, contestName string) map[string]string 
 	return questions
 }
 
+// GetSampleCaces は引数で渡されたURLから入出力例を取得します。
 func GetSampleCaces(d *agouti.WebDriver, q map[string]string) map[string][]*SampleCase {
 
 	if err := d.Start(); err != nil {
@@ -189,6 +198,7 @@ func exText(e []*api.Element) string {
 	return r.String()
 }
 
+// CreateSampleFiles は取得した入出力例をファイル化し保存します。
 func CreateSampleFiles(dir string, sc map[string][]*SampleCase) (ok bool) {
 
 	create := func(dir, fname, write string) error {
@@ -229,9 +239,10 @@ func CreateSampleFiles(dir string, sc map[string][]*SampleCase) (ok bool) {
 	return ok
 }
 
+// SampleCase は入出力サンプルケースを表します。
 type SampleCase struct {
-	Question string
-	No       int
-	In       string
-	Out      string
+	Question string // 問題番号(A,B,C...)
+	No       int    // 入出力例番号
+	In       string // 入力内容
+	Out      string // 出力内容
 }
